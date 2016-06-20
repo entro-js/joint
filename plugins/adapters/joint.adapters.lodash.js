@@ -83,19 +83,6 @@
         map: function (collection, iteratee, thisArg) {
           return lodash.map(collection, thisArg ? lodash.bind(iteratee, thisArg) : iteratee);
         },
-        merge: function () {
-
-          // Fix for lodash 4.0 not modifying original object
-          var firstObject     = arguments[0] || null;
-          var secondObject    = arguments[1] || null;
-          var thirdObject     = arguments[2] || null;
-
-          var firstObjectClone  = firstObject  ? lodash.cloneDeep(firstObject)  : {};
-          var secondObjectClone = secondObject ? lodash.cloneDeep(secondObject) : {};
-          var thirdObjectClone  = thirdObject  ? lodash.cloneDeep(thirdObject)  : {};
-
-          return lodash.merge(firstObject, firstObjectClone, secondObjectClone, thirdObjectClone);
-        },
         pluck: function (collection, path) {
           return lodash.map(collection, path);
         },
