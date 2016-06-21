@@ -2,7 +2,8 @@
     joint.g = g;
     joint.V = joint.Vectorizer = V;
 
-    if (JointAdapter) JointAdapter.load(joint);
+    // Allow adapter to override joint properties
+    if (adapter) adapter.load(joint);
 
     return joint;
 
