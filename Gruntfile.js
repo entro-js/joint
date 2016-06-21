@@ -35,7 +35,7 @@ module.exports = function(grunt) {
 
         geometry: ['src/geometry.js'],
         vectorizer: ['src/vectorizer.js'],
-
+        adapter: ['src/joint.adapter.js'],
         plugins: {
 
             'shapes.erd': ['plugins/shapes/joint.shapes.erd.js'],
@@ -216,7 +216,7 @@ module.exports = function(grunt) {
                 options: {
                     process: {
                         options: {
-                            data: pkg,
+                            data: pkg
                         },
                         delimiters: 'square'
                     }
@@ -236,6 +236,12 @@ module.exports = function(grunt) {
                         ['build/min/joint.min.js'],
                         ['wrappers/joint.foot.js']
                     ),
+                    'build/joint.adapter.js': [].concat(
+                        ['src/joint.adapter.js']
+                    ),
+                    'build/joint.adapter.min.js': [].concat(
+                        ['build/min/joint.adapter.min.js']
+                    ),
                     'build/joint.core.css': [].concat(
                         css.core
                     ),
@@ -243,6 +249,7 @@ module.exports = function(grunt) {
                         ['build/min/joint.min.css']
                     ),
                     'build/joint.js': [].concat(
+                        ['src/joint.adapter.js'],
                         ['wrappers/joint.head.js'],
                         js.geometry,
                         js.vectorizer,
@@ -251,6 +258,7 @@ module.exports = function(grunt) {
                         ['wrappers/joint.foot.js']
                     ),
                     'build/joint.min.js': [].concat(
+                        ['build/min/joint.adapter.min.js'],
                         ['wrappers/joint.head.js'],
                         ['build/min/geometry.min.js'],
                         ['build/min/vectorizer.min.js'],
@@ -467,6 +475,10 @@ module.exports = function(grunt) {
             joint: {
                 src: js.core,
                 dest: 'build/min/joint.min.js'
+            },
+            adapter: {
+                src: js.adapter,
+                dest: 'build/min/joint.adapter.min.js'
             },
             vectorizer: {
                 src: js.vectorizer,
@@ -700,6 +712,7 @@ module.exports = function(grunt) {
         'newer:uglify:deps',
         'newer:uglify:geometry',
         'newer:uglify:vectorizer',
+        'newer:uglify:adapter',
         'newer:uglify:joint',
         'newer:cssmin:joint',
         'newer:concat:geometry',
