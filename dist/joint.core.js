@@ -1,4 +1,4 @@
-/*! JointJS v0.9.10 (2016-06-13) - JavaScript diagramming library
+/*! JointJS v0.9.10 (2016-06-22) - JavaScript diagramming library
 
 
 This Source Code Form is subject to the terms of the Mozilla Public
@@ -7,41 +7,54 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 (function(root, factory) {
 
+    function getDependencies(Backbone, lodash, jQuery) {
+        return {
+            root:       root || {},
+            Backbone:   Backbone,
+            lodash:     lodash,
+            jQuery:     jQuery
+        }
+    }
+
     if (typeof define === 'function' && define.amd) {
 
         // For AMD.
-
-        define(['backbone', 'lodash', 'jquery'], function(Backbone, _, $) {
-
-            Backbone.$ = $;
-
-            return factory(root, Backbone, _, $);
+        define(['backbone', 'lodash', 'jquery'], function(Backbone, lodash, jQuery) {
+            return factory(getDependencies((Backbone.$ = jQuery) && Backbone, lodash, jQuery));
         });
 
     } else if (typeof exports !== 'undefined') {
 
         // For Node.js or CommonJS.
-
         var Backbone = require('backbone');
-        var _ = require('lodash');
-        var $ = Backbone.$ = require('jquery');
+        var lodash   = require('lodash');
+        var jQuery   = Backbone.$ = require('jquery');
 
-        module.exports = factory(root, Backbone, _, $);
-
+        module.exports = factory(getDependencies(Backbone, lodash, jQuery));
     } else {
 
         // As a browser global.
-
         var Backbone = root.Backbone;
-        var _ = root._;
-        var $ = Backbone.$ = root.jQuery || root.$;
+        var lodash   = root._;
+        var jQuery   = Backbone.$ = root.jQuery || root.$;
 
-        root.joint = factory(root, Backbone, _, $);
-        root.g = root.joint.g;
-        root.V = root.Vectorizer = root.joint.V;
+        root.joint   = factory(getDependencies(Backbone, lodash, jQuery));
+        root.g       = root.joint.g;
+        root.V       = root.Vectorizer = root.joint.V;
     }
 
-}(this, function(root, Backbone, _, $) {
+}(this, function(dependencies) {
+
+    var adapter = dependencies.root.joint && dependencies.root.joint.adapter;
+
+    // Run adapter preload
+    if (adapter) adapter.preload(dependencies);
+
+    var root        = dependencies.root;
+    var Backbone    = dependencies.Backbone;
+    var _           = dependencies.lodash;
+    var $           = dependencies.jQuery;
+
 
 //      Geometry library.
 //      (c) 2011-2015 client IO
@@ -12249,6 +12262,9 @@ joint.highlighters.stroke = {
 
     joint.g = g;
     joint.V = joint.Vectorizer = V;
+
+    // Load adapter plugins
+    if (adapter) adapter.load(joint);
 
     return joint;
 
